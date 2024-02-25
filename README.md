@@ -1,66 +1,193 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Jobsheet 2: Routing, Controller, Dan View (Tugas)
+> Nama  : Muhammad Fakhruddin Arif
+>
+> Kelas : TI-2F
+>
+> Nomor : 21
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Code
+1. Routes
+```php
+// Home
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'show']);
 
-## About Laravel
+// Prefix Category
+Route::prefix('category')->group(function () {
+    Route::get('/food-beverage', [\App\Http\Controllers\CategoryController::class, 'showFoodBeverage']);
+    Route::get('/beauty-health', [\App\Http\Controllers\CategoryController::class, 'showBeautyHealth']);
+    Route::get('/home-care', [\App\Http\Controllers\CategoryController::class, 'showHomeCare']);
+    Route::get('/baby-kid', [\App\Http\Controllers\CategoryController::class, 'showBabyKid']);
+});
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+// Route Param id and name user
+Route::get('/user/{id}/name/{name}', [\App\Http\Controllers\UserProfileController::class, 'show']);
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+// Route Sales
+Route::get('/sales', [\App\Http\Controllers\SalesController::class, 'show']);
+```
+2. Controllers
+- HomeController
+```php
+<?php
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+namespace App\Http\Controllers;
 
-## Learning Laravel
+use Illuminate\Http\Request;
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+class HomeController extends Controller
+{
+    public function show()
+    {
+        return view('home');
+    }
+}
+```
+- CategoryController
+```php
+<?php
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+namespace App\Http\Controllers;
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+use Illuminate\Http\Request;
 
-## Laravel Sponsors
+class CategoryController extends Controller
+{
+    public function showFoodBeverage()
+    {
+        return view('products.foodBeverage');
+    }
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    public function showBeautyHealth()
+    {
+        return view('products.beautyHealth');
+    }
+    public function showHomeCare()
+    {
+        return view('products.homeCare');
+    }
+    public function showBabyKid()
+    {
+        return view('products.babyKid');
+    }
+}
+```
+- UserProfileCategory
+```php
+<?php
 
-### Premium Partners
+namespace App\Http\Controllers;
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+use Illuminate\Http\Request;
 
-## Contributing
+class UserProfileController extends Controller
+{
+    public function show($id, $name)
+    {
+        return view('userProfile')
+            ->with('id', $id)
+            ->with('name', $name);
+    }
+}
+```
+- SalesController
+```php
+<?php
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+namespace App\Http\Controllers;
 
-## Code of Conduct
+use Illuminate\Http\Request;
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+class SalesController extends Controller
+{
+    public function show()
+    {
+        return view('sales');
+    }
+}
+```
+3. Views
+- Layout
+```php
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Toko Agak Laen</title>
+</head>
+<body>
+@yield('content')
+</body>
+</html>
+```
+- Home
+```php
+@extends('app')
+@section('content')
+    <h1>Selamat Datang Di Warung Yang Agak Laen</h1>
+@endsection
+```
+- Products
+1. foodBeverage
+```php
+@extends('app')
+@section('content')
+    <h1>Food Beverage</h1>
+@endsection
+```
+2. beautyHealth
+```php
+@extends('app')
+@section('content')
+    <h1>Beauty Health</h1>
+@endsection
+```
+3. homeCare
+```php
+@extends('app')
+@section('content')
+    <h1>Home Care</h1>
+@endsection
+```
+4. babyKid
+```php
+@extends('app')
+@section('content')
+    <h1>Baby Kid</h1>
+@endsection
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+- Profile
+```php
+@extends('app')
+@section('content')
+    <h1>Akun Profil</h1>
+    <p>ID: {{ $id }}</p>
+    <p>Nama: {{ $name }}</p>
+    <span>ID dan Nama Dapat Diganti</span>
+@endsection
+```
+- Sales
+```php
+@extends('app')
+@section('content')
+    <h1>Ini Halaman Penjualan</h1>
+@endsection
+```
+4. Output
+- get:/
+<img src="./public/screenshoot/home.png">
+- get:/category/food-beverage
+  <img src="./public/screenshoot/foodBeverage.png">
+- get:/category/beauty-health
+  <img src="./public/screenshoot/beautyHealth.png">
+- get:/category/home-care
+  <img src="./public/screenshoot/homeCare.png">
+- get:/category/baby-kid
+  <img src="./public/screenshoot/babyKid.png">
+- get:/user/{id}/name/{name}
+  <img src="./public/screenshoot/userProfile.png">
+- get:/sales
+  <img src="./public/screenshoot/sales.png">
